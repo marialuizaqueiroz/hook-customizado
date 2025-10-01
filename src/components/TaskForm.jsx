@@ -1,20 +1,28 @@
 import { useState } from "react";
 
+// URL do seu backend hospedado
+const API_URL = "https://my-checklist-backend.vercel.app"; 
+
 export function TaskForm({ onTaskAdded }) {
   const [title, setTitle] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const response = await fetch("/tasks", {
+    if (!title.trim()) return; // evita enviar título vazio
+
+    const response = await fetch(`${API_URL}/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, completed: false }),
+      body: JSON.stringify({ title }),
     });
 
     if (response.ok) {
       setTitle("");
       onTaskAdded(); // atualiza lista
+    } else {
+      const errorData = await response.json();
+      alert("Erro: " + (errorData.error || "Não foi possível adicionar a tarefa"));
     }
   }
 
