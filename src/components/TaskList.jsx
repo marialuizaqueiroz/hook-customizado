@@ -1,4 +1,6 @@
 // src/components/TaskList.jsx
+const API_URL = "https://my-checklist-backend.vercel.app"; 
+
 export function TaskList({ tasks, onTaskDeleted }) {
   if (!tasks || tasks.length === 0) {
     return <p className="text-gray-500">Nenhuma tarefa encontrada.</p>;
@@ -8,14 +10,15 @@ export function TaskList({ tasks, onTaskDeleted }) {
     const confirmDelete = window.confirm("Deseja realmente apagar esta tarefa?");
     if (!confirmDelete) return;
 
-    const response = await fetch(`/tasks/${id}`, {
+    const response = await fetch(`${API_URL}/tasks/${id}`, {
       method: "DELETE",
     });
 
     if (response.ok) {
-      onTaskDeleted(); // <- precisa existir
+      onTaskDeleted(); // atualiza a lista
     } else {
-      alert("Erro ao apagar a tarefa");
+      const errorData = await response.json();
+      alert("Erro ao apagar a tarefa: " + (errorData.error || "Tente novamente"));
     }
   }
 
