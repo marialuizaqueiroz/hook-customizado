@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
-export function useApi(url, options = {}) {
+// Defina aqui a URL base do seu backend
+const API_URL = "https://my-checklist-backend.vercel.app";
+
+export function useApi(endpoint, options = {}) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -9,7 +12,8 @@ export function useApi(url, options = {}) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(url, { ...options, ...customOptions });
+      // Adiciona a URL completa do backend
+      const response = await fetch(`${API_URL}${endpoint}`, { ...options, ...customOptions });
       if (!response.ok) {
         throw new Error("Erro ao buscar dados");
       }
@@ -24,7 +28,7 @@ export function useApi(url, options = {}) {
 
   useEffect(() => {
     fetchData();
-  }, [url]);
+  }, [endpoint]);
 
   return { data, loading, error, refetch: fetchData };
 }
